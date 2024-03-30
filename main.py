@@ -14,6 +14,7 @@ import cv2
 import matplotlib.pyplot as plt
 from scipy.ndimage import convolve
 from canny_detection import CannyEdgeDetector
+from hough_lines import *
 
 # pyuic5 task1.ui -o task1.py
 # global threshold - Normalize 
@@ -161,10 +162,10 @@ class CV_App(QMainWindow):
 
         self.ui.BrowseButton.clicked.connect(self.browse_img)
         self.ui.BrowseButton_2.clicked.connect(self.browse_input_image2)
-        self.ui.HighpassButton.clicked.connect(lambda: self.high_pass_filter(self.gray_img))
-        self.ui.LowpassButton.clicked.connect(lambda: self.low_pass_filter(self.gray_img))
+        # self.ui.HighpassButton.clicked.connect(lambda: self.high_pass_filter(self.gray_img))
+        # self.ui.LowpassButton.clicked.connect(lambda: self.low_pass_filter(self.gray_img))
+        # self.ui.horizontalSlider.valueChanged.connect(self.set_cutoff_freq_value)
         self.ui.GenerateHybrid.clicked.connect(lambda: self.generate_hybrid_image(self.gray_img, self.gray_img2))
-        self.ui.horizontalSlider.valueChanged.connect(self.set_cutoff_freq_value)
         self.ui.VerticalSlider.valueChanged.connect(self.set_cutoff_freq_value)
 
         self.ui.RefreshButton.clicked.connect(self.refresh_img)
@@ -187,9 +188,20 @@ class CV_App(QMainWindow):
         self.ui.RobetButton.clicked.connect(self.perform_roberts_edge_detection)
         self.ui.PrewittButton.clicked.connect(self.perform_prewitt_edge_detection)
 
+        self.ui.LinesButton.clicked.connect(self.hough_lines)
+
+    def hough_lines(self):
+        image= np.array(self.input_image)
+        image_edges = cv2.Canny(image, 50, 150)
+        image_lines = detect_and_draw_hough_lines(image_edges,image)
+        qImg = QImage(image_lines.data, image_lines.shape[1], image_lines.shape[0], image_lines.strides[0],QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(qImg)
+        self.ui.hough_output.setPixmap(pixmap)
+
+
     def canny_edge_detection(self):
         if self.input_image is not None:
-            canny_detector = CannyEdgeDetector(self.input_image)
+            canny_detector = CannyEdgeDetector(image=self.input_image,theta_resolution=1, rho_resolution=1, threshold=100 )
             canny_detector.detect_edges()
             edges = canny_detector.edges
             qImg = QImage(edges.data, edges.shape[1], edges.shape[0], edges.strides[0], QImage.Format_Grayscale8)
@@ -341,8 +353,9 @@ class CV_App(QMainWindow):
                 self.ui.filter_inputImage.setPixmap(pixmap)
                 self.ui.Threshold_inputImage.setPixmap(pixmap)
                 self.ui.EdgeDetection_inputImage.setPixmap(pixmap)
-                self.ui.pass_inputImage.setPixmap(pixmap)
+                self.ui.hough_input.setPixmap(pixmap)
                 self.ui.hybridInputImage1.setPixmap(pixmap)
+                self.ui.hough_output.setPixmap(pixmap)
                 
                 self.input_image_cv = cv2.imread(filename)
                 self.gray_img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
@@ -352,7 +365,6 @@ class CV_App(QMainWindow):
                 self.ui.filter_outputImage.setPixmap(pixmap)
                 self.ui.Threshold_outputImage.setPixmap(pixmap)
                 self.ui.EdgeDetection_outputImage.setPixmap(pixmap)
-                self.ui.pass_outputImage.setPixmap(pixmap)
                 self.ui.freqOutputImage1.setPixmap(pixmap)
 
         self.draw_rgb_histogram(self.input_image_cv)

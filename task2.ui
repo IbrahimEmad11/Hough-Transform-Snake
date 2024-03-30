@@ -49,6 +49,7 @@
     </property>
     <property name="font">
      <font>
+      <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -81,7 +82,7 @@ QTabBar::tab:selected {
 </string>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>2</number>
     </property>
     <property name="iconSize">
      <size>
@@ -962,7 +963,7 @@ background-color:transparent;</string>
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="pass_inputImage">
+     <widget class="QLabel" name="hough_input">
       <property name="geometry">
        <rect>
         <x>290</x>
@@ -985,7 +986,7 @@ background-color:transparent;</string>
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="pass_outputImage">
+     <widget class="QLabel" name="hough_output">
       <property name="geometry">
        <rect>
         <x>830</x>
@@ -1025,7 +1026,7 @@ background-color:transparent;
 border-color: transparent</string>
       </property>
       <property name="text">
-       <string>Filter Types</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -1046,7 +1047,7 @@ border: 2px solid;
 border-radius: 5px;
 }</string>
       </property>
-      <widget class="QPushButton" name="LowpassButton">
+      <widget class="QPushButton" name="CircleButton">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1071,10 +1072,10 @@ QPushButton:hover:!pressed{
 }</string>
        </property>
        <property name="text">
-        <string>Low Pass</string>
+        <string>Apply Hough Circles</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="HighpassButton">
+      <widget class="QPushButton" name="LinesButton">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1099,63 +1100,7 @@ QPushButton:hover:!pressed{
 }</string>
        </property>
        <property name="text">
-        <string>High Pass </string>
-       </property>
-      </widget>
-      <widget class="QSlider" name="horizontalSlider">
-       <property name="geometry">
-        <rect>
-         <x>40</x>
-         <y>160</y>
-         <width>160</width>
-         <height>18</height>
-        </rect>
-       </property>
-       <property name="maximum">
-        <number>2000</number>
-       </property>
-       <property name="sliderPosition">
-        <number>1000</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_5">
-       <property name="geometry">
-        <rect>
-         <x>130</x>
-         <y>190</y>
-         <width>41</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>1000</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_8">
-       <property name="geometry">
-        <rect>
-         <x>40</x>
-         <y>190</y>
-         <width>81</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Cutoff freq</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <string>Apply Hough Lines</string>
        </property>
       </widget>
      </widget>
@@ -2078,6 +2023,7 @@ background-color:transparent;</string>
        <font>
         <family>Segoe UI Black</family>
         <pointsize>12</pointsize>
+        <weight>99</weight>
         <italic>false</italic>
         <bold>true</bold>
        </font>
@@ -2120,6 +2066,7 @@ QPushButton:hover:!pressed{
       </property>
       <property name="font">
        <font>
+        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -2139,6 +2086,7 @@ QPushButton:hover:!pressed{
       <property name="font">
        <font>
         <pointsize>12</pointsize>
+        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -2157,6 +2105,7 @@ QPushButton:hover:!pressed{
       </property>
       <property name="font">
        <font>
+        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -2178,6 +2127,7 @@ QPushButton:hover:!pressed{
       </property>
       <property name="font">
        <font>
+        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
