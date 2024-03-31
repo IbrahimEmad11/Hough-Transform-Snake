@@ -49,7 +49,6 @@
     </property>
     <property name="font">
      <font>
-      <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -917,7 +916,7 @@ QPushButton:hover:!pressed{
     </widget>
     <widget class="QWidget" name="PassTab">
      <attribute name="title">
-      <string>HPF - LPF</string>
+      <string>Hough Transform</string>
      </attribute>
      <widget class="QLabel" name="outputImageLabel_7">
       <property name="geometry">
@@ -2051,7 +2050,6 @@ background-color:transparent;</string>
        <font>
         <family>Segoe UI Black</family>
         <pointsize>12</pointsize>
-        <weight>99</weight>
         <italic>false</italic>
         <bold>true</bold>
        </font>
@@ -2094,7 +2092,6 @@ QPushButton:hover:!pressed{
       </property>
       <property name="font">
        <font>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -2114,7 +2111,6 @@ QPushButton:hover:!pressed{
       <property name="font">
        <font>
         <pointsize>12</pointsize>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -2133,7 +2129,6 @@ QPushButton:hover:!pressed{
       </property>
       <property name="font">
        <font>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -2155,7 +2150,6 @@ QPushButton:hover:!pressed{
       </property>
       <property name="font">
        <font>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>

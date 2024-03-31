@@ -2,7 +2,7 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QSlider , QColorDialog, QAction, QTextEdit, QMessageBox
 from PyQt5.QtCore import QTimer,Qt, QPointF
-from PyQt5.QtGui import QColor, QIcon, QCursor, QKeySequence, QPixmap, QImage
+from PyQt5.QtGui import QColor, QIcon, QCursor, QKeySequence, QPixmap, QImage, QPainter
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QProgressBar, QDialog, QVBoxLayout, QLineEdit, QLabel
 from task2 import Ui_MainWindow
@@ -518,6 +518,77 @@ class CV_App(QMainWindow):
             # Normalize gradient magnitude to [0, 255]
             gradient_magnitude = (gradient_magnitude / gradient_magnitude.max()) * 255
             return gradient_magnitude.astype(np.uint8)  
+    def active_contour(self, img, alpha, beta, w_line, w_edge):
+        def convolve(image, kernel):
+            if image is not None:
+                height, width = image.shape
+                k_height, k_width = kernel.shape
+                output = np.zeros_like(image)
+                padded_image = np.pad(image, ((k_height//2, k_height//2), (k_width//2, k_width//2)), mode='constant')
+
+                for i in range(height):
+                    for j in range(width):
+                        output[i, j] = np.sum(padded_image[i:i+k_height, j:j+k_width] * kernel)
+                return output
+
+        def sobel_edge_detection(image):
+            if image is not None:
+            
+                image = image.astype(np.float32)
+
+                # Sobel filter kernels
+                kernel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+                kernel_y = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
+
+                # Convolve image with Sobel kernels to calculate gradients
+                grad_x = convolve(image, kernel_x)
+                grad_y = convolve(image, kernel_y)
+
+                # Compute gradient magnitude
+                gradient_magnitude = np.sqrt(grad_x**2 + grad_y**2)
+
+                # Normalize gradient magnitude to [0, 255]
+                gradient_magnitude = (gradient_magnitude / gradient_magnitude.max()) * 255
+                edge = gradient_magnitude.astype(np.uint8) 
+                return edge 
+
+        def calculate_derivatives(snake):
+            N = snake.shape[0]
+            first_derivatives = np.zeros((N, 2))
+            second_derivatives = np.zeros((N, 2))
+
+            # Calculate first derivatives using central differences
+            first_derivatives[1:-1] = (snake[2:] - snake[:-2]) / 2.0
+            first_derivatives[0] = snake[1] - snake[0]
+            first_derivatives[-1] = snake[-1] - snake[-2]
+
+            # Calculate second derivatives using central differences
+            second_derivatives[1:-1] = snake[:-2] - 2 * snake[1:-1] + snake[2:]
+            second_derivatives[0] = snake[0] - 2 * snake[1] + snake[2]
+            second_derivatives[-1] = snake[-3] - 2 * snake[-2] + snake[-1]
+
+            return first_derivatives, second_derivatives
+
+        def gaussian_filter(self, img,  kernel_size=3, sigma=100):
+            kernel_size = 3
+            img_array = np.array(img)
+            kernel = np.fromfunction(lambda x, y: (1/(2*np.pi*sigma**2)) * np.exp(-((x - kernel_size//2)**2 + (y - kernel_size//2)**2)/(2*sigma**2)), (kernel_size, kernel_size))
+            kernel = kernel / np.sum(kernel)
+            filtered_image = convolve(img_array, kernel)
+            filtered_image = Image.fromarray(filtered_image.astype('uint8'))
+            return filtered_image
+
+        img = gaussian_filter(img)
+        
+        s = np.linspace(0, 2*np.pi, 400)
+        r = 100 + 100*np.sin(s)
+        c = 220 + 100*np.cos(s)
+        snake = np.array([r, c]).T
+        D_1, D_2 = calculate_derivatives(snake)
+
+        E_internal = 0.5 * ((alpha * (D_1)**2 ) + (beta * (D_2)**2 ))
+        E_img = (w_line*img) + (w_edge*sobel_edge_detection(img))
+        E_snake = E_internal + E_img
 
     def perform_sobel_edge_detection(self):
         if self.gray_img is not None:
@@ -858,6 +929,65 @@ class CV_App(QMainWindow):
         self.cutoff_freq_value_hybrid = int(self.ui.VerticalSlider.value())
         self.ui.label_7.setText(f"{self.cutoff_freq_value_hybrid}")
     
+
+
+
+    def hough_ellipse(self):
+    
+        # Canny Edge Detection using OpenCV
+        edges = cv2.Canny(self.gray_img, 50, 150)
+
+        # Find edge points
+        edge_points = np.transpose(np.nonzero(edges))
+
+        # Get the shape of the edges image
+        edges_shape = np.shape(edges)
+
+        # Initialize accumulator array
+        accumulator = np.zeros(edges_shape, dtype=np.uint)
+
+        # Define parameter space
+        a_max = max(edges_shape) // 2
+        a_range = np.arange(-a_max, a_max + 1)
+        b_max = min(edges_shape) // 2
+        b_range = np.arange(-b_max, b_max + 1)
+
+        # Iterate through edge points and vote for potential ellipses
+        for x, y in edge_points:
+            for a in a_range:
+                for b in b_range:
+                    if a != 0 and b != 0:  # Check if a and b are non-zero
+                        new_x = x + a
+                        if new_x < 0 or new_x >= edges_shape[0]:
+                            continue
+
+                        new_y = y + b
+                        if new_y < 0 or new_y >= edges_shape[1]:
+                            continue
+
+                        accumulator[new_x, new_y] += 1
+
+        # Threshold accumulator to find potential ellipses
+        threshold = 100  
+        ellipses = np.argwhere(accumulator > threshold)
+
+        # Convert to ellipse parameters (center and radii)
+        detected_ellipses = []
+        for x, y in ellipses:
+            detected_ellipses.append((x, y, a_range[y], b_range[x]))
+
+        # Superimpose detected ellipses on the original image
+        result_image = QPixmap(self.input_image)
+        painter = QPainter(result_image)
+        painter.setPen(QColor(0, 255, 0))
+
+        for ellipse in detected_ellipses:
+            painter.drawEllipse(*ellipse)
+        painter.end()
+
+        self.ui.hough_output.setPixmap(result_image)
+
+        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = CV_App()

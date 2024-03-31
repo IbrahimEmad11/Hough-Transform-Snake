@@ -34,7 +34,6 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setBold(False)
         font.setItalic(False)
-        font.setWeight(50)
         self.tabWidget.setFont(font)
         self.tabWidget.setAccessibleName("")
         self.tabWidget.setStyleSheet("QTabWidget::pane {\n"
@@ -897,7 +896,6 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         font.setBold(True)
         font.setItalic(False)
-        font.setWeight(99)
         self.BrowseButton_2.setFont(font)
         self.BrowseButton_2.setStyleSheet("QPushButton{\n"
 "border-radius: 10px;\n"
@@ -917,7 +915,6 @@ class Ui_MainWindow(object):
         self.radioButton_2.setGeometry(QtCore.QRect(890, 50, 141, 41))
         font = QtGui.QFont()
         font.setBold(True)
-        font.setWeight(75)
         self.radioButton_2.setFont(font)
         self.radioButton_2.setObjectName("radioButton_2")
         self.GenerateHybrid = QtWidgets.QPushButton(self.Frequency)
@@ -925,14 +922,12 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(True)
-        font.setWeight(75)
         self.GenerateHybrid.setFont(font)
         self.GenerateHybrid.setObjectName("GenerateHybrid")
         self.label_7 = QtWidgets.QLabel(self.Frequency)
         self.label_7.setGeometry(QtCore.QRect(690, 450, 61, 41))
         font = QtGui.QFont()
         font.setBold(True)
-        font.setWeight(75)
         self.label_7.setFont(font)
         self.label_7.setAlignment(QtCore.Qt.AlignCenter)
         self.label_7.setObjectName("label_7")
@@ -940,7 +935,6 @@ class Ui_MainWindow(object):
         self.label_6.setGeometry(QtCore.QRect(680, 260, 81, 41))
         font = QtGui.QFont()
         font.setBold(True)
-        font.setWeight(75)
         self.label_6.setFont(font)
         self.label_6.setAlignment(QtCore.Qt.AlignCenter)
         self.label_6.setObjectName("label_6")
@@ -1010,8 +1004,8 @@ class Ui_MainWindow(object):
         self.inputImageLabel_11.setText(_translate("MainWindow", "Input"))
         self.CircleButton.setText(_translate("MainWindow", "Apply Hough Circles"))
         self.LinesButton.setText(_translate("MainWindow", "Apply Hough Lines"))
-        self.ElipsesButton.setText(_translate("MainWindow", "Apply Hough Elipses"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.PassTab), _translate("MainWindow", "HPF - LPF"))
+        self.Ellipses_Button.setText(_translate("MainWindow", "Apply Hough Ellipses"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.PassTab), _translate("MainWindow", "Hough Transform"))
         self.A6.setText(_translate("MainWindow", "Red DF"))
         self.A6_2.setText(_translate("MainWindow", "Red CDF"))
         self.A6_3.setText(_translate("MainWindow", "Blue CDF"))
@@ -1041,13 +1035,3 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "Cutoff freq"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Frequency), _translate("MainWindow", "Hybrid"))
         self.BrowseButton.setText(_translate("MainWindow", "Upload Image"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
