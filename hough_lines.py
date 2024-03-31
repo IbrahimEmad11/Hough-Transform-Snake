@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from canny_detection import CannyEdgeDetector
 import cv2
+from PIL import Image
 
 def hough_line_transform(image_edges, theta_resolution=1, rho_resolution=1):
     # Define the Hough space
@@ -55,31 +56,6 @@ def detect_and_draw_hough_lines(image_edges,image, theta_resolution=1, rho_resol
     return image_with_lines
 
 ###################################################################### HOUGH CIRCLES ####################################################################
-
-
-import numpy as np
-from PIL import Image, ImageDraw
-from scipy.ndimage import gaussian_filter
-
-import numpy as np
-from PIL import Image, ImageDraw
-from scipy.ndimage import convolve
-
-import cv2
-import numpy as np
-from PIL import Image
-
-import numpy as np
-import cv2
-from PIL import Image
-
-import numpy as np
-import cv2
-from PIL import Image
-
-import numpy as np
-import cv2
-from PIL import Image
 
 def _hough_circles(image_path, min_radius=20, max_radius=100, param1=50, param2=30):
     # Read image
