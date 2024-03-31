@@ -49,7 +49,6 @@
     </property>
     <property name="font">
      <font>
-      <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -917,7 +916,7 @@ QPushButton:hover:!pressed{
     </widget>
     <widget class="QWidget" name="PassTab">
      <attribute name="title">
-      <string>HPF - LPF</string>
+      <string>Hough Transform</string>
      </attribute>
      <widget class="QLabel" name="outputImageLabel_7">
       <property name="geometry">
@@ -1101,6 +1100,34 @@ QPushButton:hover:!pressed{
        </property>
        <property name="text">
         <string>Apply Hough Lines</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="Ellipses_Button">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>150</y>
+         <width>221</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{
+border-style: solid;
+border-width: 2px;
+border-radius: 10px;
+font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+font-size: 20px;
+color: black;
+background-color: rgb(246, 247, 250);
+}
+
+QPushButton:hover:!pressed{
+	background-color: qlineargradient(x1: 0.5, y1: 1, x2: 0.5, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);
+}</string>
+       </property>
+       <property name="text">
+        <string>Apply Hough Ellipses</string>
        </property>
       </widget>
      </widget>
@@ -2023,7 +2050,6 @@ background-color:transparent;</string>
        <font>
         <family>Segoe UI Black</family>
         <pointsize>12</pointsize>
-        <weight>99</weight>
         <italic>false</italic>
         <bold>true</bold>
        </font>
@@ -2066,7 +2092,6 @@ QPushButton:hover:!pressed{
       </property>
       <property name="font">
        <font>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -2086,7 +2111,6 @@ QPushButton:hover:!pressed{
       <property name="font">
        <font>
         <pointsize>12</pointsize>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -2105,7 +2129,6 @@ QPushButton:hover:!pressed{
       </property>
       <property name="font">
        <font>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -2127,7 +2150,6 @@ QPushButton:hover:!pressed{
       </property>
       <property name="font">
        <font>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
