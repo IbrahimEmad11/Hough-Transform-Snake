@@ -1004,7 +1004,7 @@ class Ui_MainWindow(object):
         self.inputImageLabel_11.setText(_translate("MainWindow", "Input"))
         self.CircleButton.setText(_translate("MainWindow", "Apply Hough Circles"))
         self.LinesButton.setText(_translate("MainWindow", "Apply Hough Lines"))
-        self.Ellipses_Button.setText(_translate("MainWindow", "Apply Hough Ellipses"))
+        self.ElipsesButton.setText(_translate("MainWindow", "Apply Hough Ellipses"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.PassTab), _translate("MainWindow", "Hough Transform"))
         self.A6.setText(_translate("MainWindow", "Red DF"))
         self.A6_2.setText(_translate("MainWindow", "Red CDF"))
