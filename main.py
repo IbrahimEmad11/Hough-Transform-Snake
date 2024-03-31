@@ -159,6 +159,7 @@ class CV_App(QMainWindow):
         self.lpf_image = None
         self.hpf_image = None
         self.pf_hybrid_flag = True
+        self.image_path = None
 
         self.ui.BrowseButton.clicked.connect(self.browse_img)
         self.ui.BrowseButton_2.clicked.connect(self.browse_input_image2)
@@ -189,6 +190,7 @@ class CV_App(QMainWindow):
         self.ui.PrewittButton.clicked.connect(self.perform_prewitt_edge_detection)
 
         self.ui.LinesButton.clicked.connect(self.hough_lines)
+        self.ui.CircleButton.clicked.connect(self.hough_circles)
 
     def hough_lines(self):
         image= np.array(self.input_image)
@@ -197,6 +199,27 @@ class CV_App(QMainWindow):
         qImg = QImage(image_lines.data, image_lines.shape[1], image_lines.shape[0], image_lines.strides[0],QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(qImg)
         self.ui.hough_output.setPixmap(pixmap)
+
+    def hough_circles(self):
+       # Detect circles and get the result image
+        print("the type is:",type(self.input_image))
+        print("the path is:",self.image_path)
+        image_circles = hough_circles(self.image_path)
+        print("the Circles is is is:",image_circles)
+    
+        # Convert the result image to RGB format
+        image_circles = np.array(image_circles)  # Convert PIL.Image to numpy array
+        image_rgb = cv2.cvtColor(image_circles, cv2.COLOR_BGR2RGB)
+
+        # Create a QImage from the RGB image data
+        qImg = QImage(image_rgb.data, image_rgb.shape[1], image_rgb.shape[0], image_rgb.strides[0], QImage.Format_RGB888)
+
+        # Convert QImage to QPixmap
+        pixmap = QPixmap.fromImage(qImg)
+
+        # Set the QPixmap to the label for display
+        self.ui.hough_output.setPixmap(pixmap)
+
 
 
     def canny_edge_detection(self):
@@ -346,6 +369,7 @@ class CV_App(QMainWindow):
         options = QFileDialog.Options()
         filename, _ = QFileDialog.getOpenFileName(self, "Select Image", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
         self.input_image = Image.open(f"{filename}")
+        self.image_path = filename
 
         if filename:
             pixmap = QPixmap(filename)
