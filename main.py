@@ -228,7 +228,7 @@ class CV_App(QMainWindow):
 
     def canny_edge_detection(self):
         if self.input_image is not None:
-            canny_detector = CannyEdgeDetector(image=self.input_image,theta_resolution=1, rho_resolution=1, threshold=100 )
+            canny_detector = CannyEdgeDetector(image=self.input_image)
             canny_detector.detect_edges()
             edges = canny_detector.edges
             qImg = QImage(edges.data, edges.shape[1], edges.shape[0], edges.strides[0], QImage.Format_Grayscale8)

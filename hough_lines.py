@@ -246,3 +246,31 @@ def draw_hough_elipses(path):
     contours, hierarchy = cv2.findContours(edges,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
     img= cv2.drawContours(img,contours,-1,(0,255,0),5)
     return img
+
+
+# Note this function comlixty is to high O(n^4) so it does not work efficiently
+def hough_ellipse(image, threshold=200):
+    edges = cv2.Canny(image, 5, 200)
+    height, width = edges.shape
+    accumulator = np.zeros((height, width))
+    
+    for y in range(height):
+        for x in range(width):
+            if edges[y][x] == 255:
+                for a in range(1, width//2):
+                    b = int(a * np.sqrt((x - width/2)*2 + (y - height/2)*2) / max(width/2, height/2))
+                    if b > 0:
+                        for theta in range(0, 360):
+                            theta_rad = np.deg2rad(theta)
+                            x0 = int(x - a * np.cos(theta_rad))
+                            y0 = int(y + b * np.sin(theta_rad))
+                            if x0 >= 0 and x0 < width and y0 >= 0 and y0 < height:
+                                accumulator[y0][x0] += 1
+    
+    ellipses = []
+    for y in range(height):
+        for x in range(width):
+            if accumulator[y][x] > threshold:
+                ellipses.append((x,y))
+    
+    return ellipses
