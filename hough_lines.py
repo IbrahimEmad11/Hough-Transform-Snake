@@ -3,123 +3,202 @@ import matplotlib.pyplot as plt
 from canny_detection import CannyEdgeDetector
 import cv2
 from PIL import Image
+from collections import defaultdict
 
-def hough_line_transform(image_edges, theta_resolution=1, rho_resolution=1):
-    # Define the Hough space
-    height, width = image_edges.shape
-    max_rho = int(np.sqrt(height**2 + width**2))
-    num_thetas = int(np.degrees(np.pi) / theta_resolution)
-    accumulator = np.zeros((2 * max_rho, num_thetas), dtype=np.uint8)
+def hough_peaks(H, peaks, neighborhood_size=3):
+  
+    indices = []
+    H1 = np.copy(H)
+    
+    # loop through number of peaks to identify
+    for i in range(peaks):
+        idx = np.argmax(H1)  # find argmax in flattened array
+        H1_idx = np.unravel_index(idx, H1.shape)  # remap to shape of H to be 2d array
+        indices.append(H1_idx)
 
-    # Define thetas
-    thetas = np.linspace(-np.pi/2, np.pi/2, num_thetas)
+        idx_y, idx_x = H1_idx  # separate x, y indices from argmax(H)
+        
+        # if idx_x is too close to the edges choose appropriate values
+        if (idx_x - (neighborhood_size / 2)) < 0:
+            min_x = 0
+        else:
+            min_x = idx_x - (neighborhood_size / 2)
+        if (idx_x + (neighborhood_size / 2) + 1) > H.shape[1]:
+            max_x = H.shape[1]
+        else:
+            max_x = idx_x + (neighborhood_size / 2) + 1
 
-    # Loop over edge pixels
-    edge_points = np.nonzero(image_edges)
-    for i in range(len(edge_points[0])):
-        x = edge_points[1][i]
-        y = edge_points[0][i]
-        for theta_index, theta in enumerate(thetas):
-            rho = int(x * np.cos(theta) + y * np.sin(theta))
-            accumulator[rho + max_rho, theta_index] += 1
+        # if idx_y is too close to the edges choose appropriate values
+        if (idx_y - (neighborhood_size / 2)) < 0:
+            min_y = 0
+        else:
+            min_y = idx_y - (neighborhood_size / 2)
+        if (idx_y + (neighborhood_size / 2) + 1) > H.shape[0]:
+            max_y = H.shape[0]
+        else:
+            max_y = idx_y + (neighborhood_size / 2) + 1
 
-    return accumulator, thetas, np.arange(-max_rho, max_rho, rho_resolution)
+        # bound each index by the neighborhood size and set all values to 0
+        for x in range(int(min_x), int(max_x)):
+            for y in range(int(min_y), int(max_y)):
+                
+                # remove neighborhoods in H1
+                H1[y, x] = 0
 
-def find_hough_peaks(accumulator, thetas, rhos, threshold):
-    peaks = []
-    for i in range(accumulator.shape[0]):
-        for j in range(accumulator.shape[1]):
-            if accumulator[i, j] > threshold:
-                peaks.append((i, j))
-    return peaks
+                # highlight peaks in original H
+                if x == min_x or x == (max_x - 1):
+                    H[y, x] = 255
+                if y == min_y or y == (max_y - 1):
+                    H[y, x] = 255
 
-def draw_lines(image, peaks, thetas, rhos):
-    for peak in peaks:
-        rho_index, theta_index = peak
-        rho = rhos[rho_index]
-        theta = thetas[theta_index]
-        x0 = rho * np.cos(theta)
-        y0 = rho * np.sin(theta)
-        x1 = int(x0 + 1000 * (-np.sin(theta)))
-        y1 = int(y0 + 1000 * (np.cos(theta)))
-        x2 = int(x0 - 1000 * (-np.sin(theta)))
-        y2 = int(y0 - 1000 * (np.cos(theta)))
-        cv2.line(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
-    return image
+    # return the indices and the original Hough space with selected points
+    return indices, H
 
-def detect_and_draw_hough_lines(image_edges,image, theta_resolution=1, rho_resolution=1, threshold=200):
-    # canny_detector = CannyEdgeDetector(image)
-    # image_edges = canny_detector.detect_edges()
-    accumulator, thetas, rhos = hough_line_transform(image_edges, theta_resolution, rho_resolution)
-    peaks = find_hough_peaks(accumulator, thetas, rhos, threshold)
-    image_with_lines = draw_lines(image, peaks, thetas, rhos)
-    return image_with_lines
+def hough_lines_draw(img, indices, rhos, thetas):
 
+    for i in range(len(indices)):
+        # get lines from rhos and thetas
+        rho = rhos[indices[i][0]]
+        theta = thetas[indices[i][1]]
+        a = np.cos(theta)
+        b = np.sin(theta)
+        x0 = a * rho
+        y0 = b * rho
+        
+        # these are then scaled so that the lines go off the edges of the image
+        y1 = int(y0 + 1000 * (a))
+        x1 = int(x0 + 1000 * (-b))
+        y2 = int(y0 - 1000 * (a))
+        x2 = int(x0 - 1000 * (-b))
+        
+        cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 2)
+
+def line_detection(image: np.ndarray,T_low,T_upper):
+
+    grayImg = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blurImg = cv2.GaussianBlur(grayImg, (5,5), 1.5)
+    edgeImg = cv2.Canny(blurImg, T_low, T_upper)
+    
+
+    height, width = edgeImg.shape
+    
+    maxDist = int(np.around(np.sqrt(height**2 + width**2)))
+    
+    thetas = np.deg2rad(np.arange(-90, 90))
+    rhos = np.linspace(-maxDist, maxDist, 2*maxDist)
+    
+    accumulator = np.zeros((2 * maxDist, len(thetas)))
+    
+    for y in range(height):
+        for x in range(width):
+            if edgeImg[y,x] > 0:
+                for k in range(len(thetas)):
+                    r = x * np.cos(thetas[k]) + y * np.sin(thetas[k])
+                    accumulator[int(r) + maxDist, k] += 1
+                    
+    return accumulator, thetas, rhos
+
+def detect_hough_lines(source: np.ndarray,T_low=20,T_high=100,peaks: int = 10):
+    
+    src = np.copy(source)
+    H, thetas, rhos = line_detection(src,T_low,T_high)
+    indicies, H = hough_peaks(H, peaks) 
+    hough_lines_draw(src, indicies, rhos, thetas)
+    plt.imshow(src)
+    plt.axis("off")
+    return src
 ###################################################################### HOUGH CIRCLES ####################################################################
 
-def _hough_circles(image_path, min_radius=20, max_radius=100, param1=50, param2=30):
-    # Read image
-    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
-    # Apply median blur
-    image = cv2.medianBlur(image, 5)
+def calculateAccumlator(img_height, img_width, edge_image, circle_candidates):
+    accumulator = defaultdict(int)
+    for y in range(img_height):
+        for x in range(img_width):
+            if edge_image[y][x] != 0: #white pixel
+                for r, rcos_t, rsin_t in circle_candidates:
+                    x_center = x - rcos_t
+                    y_center = y - rsin_t
+                    accumulator[(x_center, y_center, r)] += 1 #vote for current candidate
+    return accumulator
 
-    # Define accumulator
-    accumulator = np.zeros_like(image, dtype=np.uint16)
+def condidate_circles(thetas, rs, num_thetas):
 
-    # Define radius range
-    radius_range = np.arange(min_radius, max_radius + 1)
+    # Calculate Cos(theta) and Sin(theta) it will be required later
+    cos_thetas = np.cos(np.deg2rad(thetas))
+    sin_thetas = np.sin(np.deg2rad(thetas))
+    circle_candidates = []
 
-    # Precompute cosine and sine values for all thetas
-    cos_theta = np.cos(np.deg2rad(np.arange(360)))
-    sin_theta = np.sin(np.deg2rad(np.arange(360)))
+    for r in rs:
+        for t in range(num_thetas):
+            circle_candidates.append((r, int(r * cos_thetas[t]), int(r * sin_thetas[t])))
+    return circle_candidates
 
-    # Loop over radius
-    for radius in radius_range:
-        for theta_index in range(360):
-            # Compute circle parameters
-            a = np.round(radius * cos_theta[theta_index]).astype(int)
-            b = np.round(radius * sin_theta[theta_index]).astype(int)
+def post_procces(out_circles, pixel_threshold):
+    postprocess_circles = []
+    for x, y, r, v in out_circles:
 
-            # Shifted coordinates
-            center_x = np.arange(max(0, a), min(image.shape[1], image.shape[1] - a))
-            center_y = np.arange(max(0, b), min(image.shape[0], image.shape[0] - b))
+      # Remove nearby duplicate circles based on pixel_threshold
+      if all(abs(x - xc) > pixel_threshold or abs(y - yc) > pixel_threshold or abs(r - rc) > pixel_threshold for xc, yc, rc, v in postprocess_circles):
+        postprocess_circles.append((x, y, r, v))
+    return postprocess_circles
 
-            # Create meshgrid for indexing
-            grid_x, grid_y = np.meshgrid(center_x, center_y)
+def hough_circle(circle_color,img_path:str, r_min:int = 20, r_max:int = 100, delta_r:int = 1, num_thetas:int = 100, bin_threshold:float = 0.4, min_edge_threshold:int = 100, max_edge_threshold:int = 200, pixel_threshold:int = 20,  post_process:bool = True):
+        
+    input_img = cv2.imread(img_path)
 
-            # Mask to extract edge points
-            edge_mask = image[grid_y, grid_x] > 0
+    #Edge detection on the input image
+    edge_image = cv2.cvtColor(input_img, cv2.COLOR_BGR2GRAY)
 
-            # Update accumulator using vectorized operations
-            accumulator[grid_y[edge_mask], grid_x[edge_mask]] += 1
+    edge_image = cv2.Canny(edge_image, min_edge_threshold, max_edge_threshold)
 
-    # Threshold the accumulator to find potential circles
-    circles = np.argwhere(accumulator >= param2)
+    if edge_image is None:
+        print ("Error in input image!")
+        return
 
-    # Check if circles were detected
-    if circles.size == 0:
-        print("No circles detected")
-        return None
+    #image size
+    img_height, img_width = edge_image.shape[:2]
+    
+    # R and Theta ranges
+    dtheta = int(360 / num_thetas)
+    
+    ## Thetas is bins created from 0 to 360 degree with increment of the dtheta
+    thetas = np.arange(0, 360, step=dtheta)
+    
+    ## Radius ranges from r_min to r_max 
+    rs = np.arange(r_min, r_max, step=delta_r)
+    
+    circle_candidates = condidate_circles(thetas, rs, num_thetas)
 
-    # Convert circles to integer coordinates
-    circles = np.uint16(np.around(circles))
+    accumulator = calculateAccumlator(img_height, img_width, edge_image, circle_candidates)
+    
+    # Output image with detected lines drawn
+    output_img = input_img.copy()
+    # Output list of detected circles. A single circle would be a tuple of (x,y,r,threshold) 
+    out_circles = []
+    
+    # Sort the accumulator based on the votes for the candidate circles 
+    for candidate_circle, votes in sorted(accumulator.items(), key=lambda i: -i[1]):
+        x, y, r = candidate_circle
+        current_vote_percentage = votes / num_thetas
+        if current_vote_percentage >= bin_threshold: 
+            # Shortlist the circle for final result
+            out_circles.append((x, y, r, current_vote_percentage))
+    
+    # Post process the results, can add more post processing later.
+    if post_process :
+        out_circles = post_procces(out_circles, pixel_threshold)
+        
+    # Draw shortlisted circles on the output image
+    for x, y, r, v in out_circles:
+        if circle_color =='Red':
+            output_img = cv2.circle(output_img, (x,y), r, (255,0,0), 2)
+        elif circle_color =='Blue':
+           output_img = cv2.circle(output_img, (x,y), r, (0,0,205), 2)
+        elif circle_color == 'Green':
+            output_img = cv2.circle(output_img, (x,y), r, (50,205,50), 2)
+    
+    return output_img
 
-    # Convert image to BGR for drawing circles
-    cimg = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-
-    # Draw detected circles
-    if circles is not None:
-        for circle in circles:
-            center = (circle[1], circle[0])
-            radius = circle[2]  # Make sure to update this line if the structure of circles array changes
-            cv2.circle(cimg, center, radius, (0, 255, 0), 2)
-            cv2.circle(cimg, center, 2, (0, 0, 255), 3)
-
-    # Convert the resulting image to a PIL Image
-    result_image = Image.fromarray(cimg)
-
-    return result_image
 
 
 def hough_circles(image_path, min_radius=20, max_radius=100, dp=1, min_dist=50, param1=50, param2=30):
@@ -156,3 +235,16 @@ def hough_circles(image_path, min_radius=20, max_radius=100, dp=1, min_dist=50, 
 
     return result_image
 
+###################################################################### HOUGH ELIPSES ####################################################################
+    
+def draw_hough_elipses(path):
+    img = cv2.imread(path)
+    img = cv2.resize(img,(512,512))
+    imgray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # ret , threshold = cv2.threshold(imgray,20,255,0)
+    edges = cv2.Canny(imgray,100, 200)
+
+    contours, hierarchy = cv2.findContours(edges,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+
+    img= cv2.drawContours(img,contours,-1,(0,255,0),2)
+    return img

@@ -515,6 +515,22 @@ class Ui_MainWindow(object):
 "    background-color: qlineargradient(x1: 0.5, y1: 1, x2: 0.5, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
 "}")
         self.LinesButton.setObjectName("LinesButton")
+        self.ElipsesButton = QtWidgets.QPushButton(self.Filtering_3)
+        self.ElipsesButton.setGeometry(QtCore.QRect(10, 150, 221, 51))
+        self.ElipsesButton.setStyleSheet("QPushButton{\n"
+"border-style: solid;\n"
+"border-width: 2px;\n"
+"border-radius: 10px;\n"
+"font-family: Impact, Haettenschweiler, \'Arial Narrow Bold\', sans-serif;\n"
+"font-size: 20px;\n"
+"color: black;\n"
+"background-color: rgb(246, 247, 250);\n"
+"}\n"
+"\n"
+"QPushButton:hover:!pressed{\n"
+"    background-color: qlineargradient(x1: 0.5, y1: 1, x2: 0.5, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}")
+        self.ElipsesButton.setObjectName("ElipsesButton")
         self.tabWidget.addTab(self.PassTab, "")
         self.HistogramTab = QtWidgets.QWidget()
         self.HistogramTab.setObjectName("HistogramTab")
@@ -994,6 +1010,7 @@ class Ui_MainWindow(object):
         self.inputImageLabel_11.setText(_translate("MainWindow", "Input"))
         self.CircleButton.setText(_translate("MainWindow", "Apply Hough Circles"))
         self.LinesButton.setText(_translate("MainWindow", "Apply Hough Lines"))
+        self.ElipsesButton.setText(_translate("MainWindow", "Apply Hough Elipses"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.PassTab), _translate("MainWindow", "HPF - LPF"))
         self.A6.setText(_translate("MainWindow", "Red DF"))
         self.A6_2.setText(_translate("MainWindow", "Red CDF"))

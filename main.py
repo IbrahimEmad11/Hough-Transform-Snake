@@ -114,20 +114,17 @@ class GaussianNoiseDialog(QDialog):
     def apply_action(self):
          self.accept()
 
-class CannyThresholds(QDialog):
+class LinesPeak(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Set Thresholds")
+        self.setWindowTitle("Determine No. Of Peaks")
         layout = QVBoxLayout()
-        label1 = QLabel("Low Threshold:")
-        label2 = QLabel("High Threshold:")
+        label1 = QLabel("Peaks Number:")
         self.input1 = QLineEdit()
-        self.input2 = QLineEdit()
+    
 
         layout.addWidget(label1)
         layout.addWidget(self.input1)
-        layout.addWidget(label2)
-        layout.addWidget(self.input2)
 
         self.apply_button = QPushButton("Apply")
         self.apply_button.clicked.connect(self.apply_action)
@@ -136,7 +133,7 @@ class CannyThresholds(QDialog):
         self.setLayout(layout)
 
     def get_input_values(self):
-        return self.input1.text(), self.input2.text() 
+        return self.input1.text()
 
     def apply_action(self):
          self.accept()
@@ -191,12 +188,15 @@ class CV_App(QMainWindow):
 
         self.ui.LinesButton.clicked.connect(self.hough_lines)
         self.ui.CircleButton.clicked.connect(self.hough_circles)
+        self.ui.ElipsesButton.clicked.connect(self.hough_elipses)
 
     def hough_lines(self):
-        image= np.array(self.input_image)
-        image_edges = cv2.Canny(image, 50, 150)
-        image_lines = detect_and_draw_hough_lines(image_edges,image)
-        qImg = QImage(image_lines.data, image_lines.shape[1], image_lines.shape[0], image_lines.strides[0],QImage.Format_RGB888)
+        dialog = LinesPeak(self)
+        if dialog.exec_():
+            peaks_no = int(dialog.get_input_values())
+        image = Image.open(self.image_path)
+        final_img = detect_hough_lines(image, peaks=peaks_no)
+        qImg = QImage(final_img.data, final_img.shape[1], final_img.shape[0], final_img.strides[0],QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(qImg)
         self.ui.hough_output.setPixmap(pixmap)
 
@@ -220,7 +220,11 @@ class CV_App(QMainWindow):
         # Set the QPixmap to the label for display
         self.ui.hough_output.setPixmap(pixmap)
 
-
+    def hough_elipses(self):
+        image_elipse = draw_hough_elipses(self.image_path)
+        qImg = QImage(image_elipse.data, image_elipse.shape[1], image_elipse.shape[0], image_elipse.strides[0], QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(qImg)
+        self.ui.hough_output.setPixmap(pixmap)
 
     def canny_edge_detection(self):
         if self.input_image is not None:

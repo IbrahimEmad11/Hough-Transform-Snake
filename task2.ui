@@ -1103,6 +1103,34 @@ QPushButton:hover:!pressed{
         <string>Apply Hough Lines</string>
        </property>
       </widget>
+      <widget class="QPushButton" name="ElipsesButton">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>150</y>
+         <width>221</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{
+border-style: solid;
+border-width: 2px;
+border-radius: 10px;
+font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+font-size: 20px;
+color: black;
+background-color: rgb(246, 247, 250);
+}
+
+QPushButton:hover:!pressed{
+	background-color: qlineargradient(x1: 0.5, y1: 1, x2: 0.5, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa);
+}</string>
+       </property>
+       <property name="text">
+        <string>Apply Hough Elipses</string>
+       </property>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="HistogramTab">
