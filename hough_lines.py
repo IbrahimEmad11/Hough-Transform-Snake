@@ -274,3 +274,59 @@ def hough_ellipse(image, threshold=200):
                 ellipses.append((x,y))
     
     return ellipses
+
+
+# def hough_ellipse(self):
+
+#     # Canny Edge Detection using OpenCV
+#     edges = cv2.Canny(self.gray_img, 50, 150)
+
+#     # Find edge points
+#     edge_points = np.transpose(np.nonzero(edges))
+
+#     # Get the shape of the edges image
+#     edges_shape = np.shape(edges)
+
+#     # Initialize accumulator array
+#     accumulator = np.zeros(edges_shape, dtype=np.uint)
+
+#     # Define parameter space
+#     a_max = max(edges_shape) // 2
+#     a_range = np.arange(-a_max, a_max + 1)
+#     b_max = min(edges_shape) // 2
+#     b_range = np.arange(-b_max, b_max + 1)
+
+#     # Iterate through edge points and vote for potential ellipses
+#     for x, y in edge_points:
+#         for a in a_range:
+#             for b in b_range:
+#                 if a != 0 and b != 0:  # Check if a and b are non-zero
+#                     new_x = x + a
+#                     if new_x < 0 or new_x >= edges_shape[0]:
+#                         continue
+
+#                     new_y = y + b
+#                     if new_y < 0 or new_y >= edges_shape[1]:
+#                         continue
+
+#                     accumulator[new_x, new_y] += 1
+
+#     # Threshold accumulator to find potential ellipses
+#     threshold = 100  
+#     ellipses = np.argwhere(accumulator > threshold)
+
+#     # Convert to ellipse parameters (center and radii)
+#     detected_ellipses = []
+#     for x, y in ellipses:
+#         detected_ellipses.append((x, y, a_range[y], b_range[x]))
+
+#     # Superimpose detected ellipses on the original image
+#     result_image = QPixmap(self.input_image)
+#     painter = QPainter(result_image)
+#     painter.setPen(QColor(0, 255, 0))
+
+#     for ellipse in detected_ellipses:
+#         painter.drawEllipse(*ellipse)
+#     painter.end()
+
+#     self.ui.hough_output.setPixmap(result_image)
