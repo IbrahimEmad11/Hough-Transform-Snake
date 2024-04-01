@@ -15,7 +15,6 @@ import matplotlib.pyplot as plt
 from scipy.ndimage import convolve
 from canny_detection import CannyEdgeDetector
 from hough_lines import *
-from active_contour import ActiveContour
 from snake_contour import *
 
 
