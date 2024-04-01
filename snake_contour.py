@@ -8,14 +8,7 @@ from scipy import ndimage as filt
 
 
 def Matrix_A(a, b, N):
-    """
-    a: float
-    alpha parameter
-    b: float
-    beta parameter
-    N: int
-    N is the number of points sampled on the snake curve: (x(p_i), y(p_i)), i=0,...,N-1
-    """
+
     row = np.r_[
         -2*a - 6*b,
         a + 4*b,
@@ -89,27 +82,7 @@ def external_edge_force(img, sigma=30.):
 
 
 def iterate_snake(x, y, a, b, fx, fy, gamma, n_iters, return_all=True):
-    """
-    x: ndarray
-        intial x coordinates of the snake
-    y: ndarray
-        initial y coordinates of the snake
-    a: float
-        alpha parameter
-    b: float
-        beta parameter
-    fx: callable
-        partial derivative of first coordinate of external energy function. This is the first element of the gradient of the external energy.
-    fy: callable
-        see fx.
-    gamma: float
-        step size of the iteration
-    n_iters: int
-        number of times to iterate the snake
-    return_all: bool
-        if True, a list of (x,y) coords are returned corresponding to each iteration.
-        if False, the (x,y) coords of the last iteration are returned.
-    """
+
     A = Matrix_A(a, b, x.shape[0])
     B = np.linalg.inv(np.eye(x.shape[0]) - gamma*A)
     if return_all:
@@ -127,8 +100,6 @@ def iterate_snake(x, y, a, b, fx, fy, gamma, n_iters, return_all=True):
     else:
         return (x, y)
 
-    
-
 
 def activeContour(img,alpha,beta,gamma,iterations,sigma):
 
@@ -136,25 +107,11 @@ def activeContour(img,alpha,beta,gamma,iterations,sigma):
     x = 153+105*np.cos(t)
     y = 156+120*np.sin(t)
 
-   
-
     # fx and fy are callable functions
     fx, fy = external_edge_force(img, sigma)
 
-    snakes = iterate_snake(
-        x=x,
-        y=y,
-        a=alpha,
-        b=beta,
-        fx=fx,
-        fy=fy,
-        gamma=gamma,
-        n_iters=iterations,
-        return_all=True
-    )
+    snakes = iterate_snake(x=x, y=y, a=alpha, b=beta, fx=fx, fy=fy, gamma=gamma, n_iters=iterations, return_all=True )
   
-
-
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.imshow(img, cmap=plt.cm.gray)
@@ -169,8 +126,6 @@ def activeContour(img,alpha,beta,gamma,iterations,sigma):
         if i % 10 == 0:
             ax.plot(np.r_[snake[0], snake[0][0]], np.r_[
                     snake[1], snake[1][0]], c=(0, 0, 1), lw=2)
-        
-
     x=snake[0]
     y=snake[1]
     perimeter = 0
@@ -179,19 +134,6 @@ def activeContour(img,alpha,beta,gamma,iterations,sigma):
         distance = np.sqrt(np.square(x[i+1]-x[i])+np.square(y[i+1]-y[i]))
         perimeter += distance
 
-    # cnt = contours[0]
-    # area1 = cv2.contourArea(x)  # Area of first contour
-    # perimeter = cv2.arcLength(x, True)  # Perimeter of first contour 
-    # area1 = cv2.contourArea(snake)
-    # x = snake[:, 0]
-    # y = snake[:, 1]
-    # for i in np.arange(len(x)-1):
-    #     # calculate the distance between the current point and the next point
-    #     distance = np.sqrt(np.square(x[i+1]-x[i])+np.square(y[i+1]-y[i]))
-    #     perimeter += distance
-    # print("Detected Contour with Area: ",abs(area) )
-
-    # Plot the last one a different color.
     ax.plot(np.r_[snakes[-1][0], snakes[-1][0][0]],
             np.r_[snakes[-1][1], snakes[-1][1][0]], c=(1, 0, 0), lw=2)
     # plt.title("Active Contour")
