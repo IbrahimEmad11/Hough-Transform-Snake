@@ -514,6 +514,77 @@ class CV_App(QMainWindow):
             # Normalize gradient magnitude to [0, 255]
             gradient_magnitude = (gradient_magnitude / gradient_magnitude.max()) * 255
             return gradient_magnitude.astype(np.uint8)  
+    def active_contour(self, img, alpha, beta, w_line, w_edge):
+        def convolve(image, kernel):
+            if image is not None:
+                height, width = image.shape
+                k_height, k_width = kernel.shape
+                output = np.zeros_like(image)
+                padded_image = np.pad(image, ((k_height//2, k_height//2), (k_width//2, k_width//2)), mode='constant')
+
+                for i in range(height):
+                    for j in range(width):
+                        output[i, j] = np.sum(padded_image[i:i+k_height, j:j+k_width] * kernel)
+                return output
+
+        def sobel_edge_detection(image):
+            if image is not None:
+            
+                image = image.astype(np.float32)
+
+                # Sobel filter kernels
+                kernel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+                kernel_y = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
+
+                # Convolve image with Sobel kernels to calculate gradients
+                grad_x = convolve(image, kernel_x)
+                grad_y = convolve(image, kernel_y)
+
+                # Compute gradient magnitude
+                gradient_magnitude = np.sqrt(grad_x**2 + grad_y**2)
+
+                # Normalize gradient magnitude to [0, 255]
+                gradient_magnitude = (gradient_magnitude / gradient_magnitude.max()) * 255
+                edge = gradient_magnitude.astype(np.uint8) 
+                return edge 
+
+        def calculate_derivatives(snake):
+            N = snake.shape[0]
+            first_derivatives = np.zeros((N, 2))
+            second_derivatives = np.zeros((N, 2))
+
+            # Calculate first derivatives using central differences
+            first_derivatives[1:-1] = (snake[2:] - snake[:-2]) / 2.0
+            first_derivatives[0] = snake[1] - snake[0]
+            first_derivatives[-1] = snake[-1] - snake[-2]
+
+            # Calculate second derivatives using central differences
+            second_derivatives[1:-1] = snake[:-2] - 2 * snake[1:-1] + snake[2:]
+            second_derivatives[0] = snake[0] - 2 * snake[1] + snake[2]
+            second_derivatives[-1] = snake[-3] - 2 * snake[-2] + snake[-1]
+
+            return first_derivatives, second_derivatives
+
+        def gaussian_filter(self, img,  kernel_size=3, sigma=100):
+            kernel_size = 3
+            img_array = np.array(img)
+            kernel = np.fromfunction(lambda x, y: (1/(2*np.pi*sigma**2)) * np.exp(-((x - kernel_size//2)**2 + (y - kernel_size//2)**2)/(2*sigma**2)), (kernel_size, kernel_size))
+            kernel = kernel / np.sum(kernel)
+            filtered_image = convolve(img_array, kernel)
+            filtered_image = Image.fromarray(filtered_image.astype('uint8'))
+            return filtered_image
+
+        img = gaussian_filter(img)
+        
+        s = np.linspace(0, 2*np.pi, 400)
+        r = 100 + 100*np.sin(s)
+        c = 220 + 100*np.cos(s)
+        snake = np.array([r, c]).T
+        D_1, D_2 = calculate_derivatives(snake)
+
+        E_internal = 0.5 * ((alpha * (D_1)**2 ) + (beta * (D_2)**2 ))
+        E_img = (w_line*img) + (w_edge*sobel_edge_detection(img))
+        E_snake = E_internal + E_img
 
     def perform_sobel_edge_detection(self):
         if self.gray_img is not None:
