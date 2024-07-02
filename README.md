@@ -17,8 +17,9 @@ This project involves edge and boundary detection using various computer vision 
         - Non-maximum suppression to thin the edges.
         - Edge tracking using hysteresis.
         
-      ![Canny Edge Detection](![image](https://github.com/IbrahimEmad11/CompVision_Task2/assets/110200613/b958a85d-832f-46fa-8a8c-f9d4ff0c2753)
-)
+      ![Canny Edge Detection](![image](https://github.com/IbrahimEmad11/CompVision_Task2/assets/output/active-contour.jpg)
+      
+
       
     - **Hough Transform for Line Detection:**
         - Line detection using parametric representation in θ and ρ space.
@@ -48,7 +49,7 @@ This project involves edge and boundary detection using various computer vision 
     - **Freeman Chain Code:**
         - Converted the contour points into chain codes using the Freeman chain code algorithm.
         
-      ![Active Contour](https://i.imgur.com/40xYp7n.png)
+      ![Canny Edge Detection](![image](https://github.com/IbrahimEmad11/CompVision_Task2/assets/output/active-contour.jpg)
 
 #### B) Reporting
 
