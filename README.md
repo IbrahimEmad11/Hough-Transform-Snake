@@ -17,25 +17,25 @@ This project involves edge and boundary detection using various computer vision 
         - Non-maximum suppression to thin the edges.
         - Edge tracking using hysteresis.
         
-      ![Canny Edge Detection](![image](https://github.com/IbrahimEmad11/CompVision_Task2/assets/output/active-contour.jpg)
+      ![Canny Edge Detection](![image]([https://github.com/IbrahimEmad11/CompVision_Task2/assets/output/active-contour.jpg](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/canny.jpg))
       
 
       
     - **Hough Transform for Line Detection:**
         - Line detection using parametric representation in θ and ρ space.
         
-      ![Hough Line Detection](https://i.imgur.com/XtNH9Hp.png)
+      ![Hough Line Detection]([https://i.imgur.com/XtNH9Hp.png](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/hough-line.jpg))
       
     - **Hough Transform for Circle Detection:**
         - Circle detection with a 3-dimensional parameter space for center coordinates and radius.
         
-      ![Hough Circle Detection](https://i.imgur.com/6G6aeAs.png)
-      ![Hough Circle Detection](https://i.imgur.com/X7BpmQN.png)
+      ![Hough Circle Detection]([https://i.imgur.com/6G6aeAs.png](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/hough-circle1.jpg))
+      ![Hough Circle Detection]([https://i.imgur.com/X7BpmQN.png](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/hough-circle2.jpg))
       
     - **Hough Transform for Ellipse Detection:**
         - Ellipse detection with a 5-dimensional parameter space for center coordinates, major and minor axes' lengths, and orientation angle.
         
-      ![Hough Ellipse Detection](https://i.imgur.com/LKlhMx0.png)
+      ![Hough Ellipse Detection]([https://i.imgur.com/LKlhMx0.png](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/hough-elipse.png))
 
 2. **Active Contour Model (SNAKE)**
     - **Initialize Contour:**
@@ -49,7 +49,7 @@ This project involves edge and boundary detection using various computer vision 
     - **Freeman Chain Code:**
         - Converted the contour points into chain codes using the Freeman chain code algorithm.
         
-      ![Canny Edge Detection](![image](https://github.com/IbrahimEmad11/CompVision_Task2/assets/output/active-contour.jpg)
+      ![Active Contour](![image]([https://github.com/IbrahimEmad11/CompVision_Task2/assets/output/active-contour.jpg](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/active-contour.jpg))
 
 #### B) Reporting
 
@@ -59,13 +59,6 @@ This project involves edge and boundary detection using various computer vision 
     - Results with superimposed images.
     - Calculations of perimeter and area for the contours.
 
-### Files Included
-
-- `edge_detection.py`: Python script for detecting edges using the Canny edge detector.
-- `hough_transform.py`: Python script for detecting lines, circles, and ellipses using Hough Transform.
-- `snake_algorithm.py`: Python script for implementing the Active Contour Model (SNAKE).
-- `results/`: Directory containing the images with superimposed detected shapes and contours.
-- `report.pdf`: Detailed report including methodology, code, results, and calculations.
 
 ### Instructions to Run the Code
 
