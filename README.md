@@ -17,7 +17,8 @@ This project involves edge and boundary detection using various computer vision 
         - Non-maximum suppression to thin the edges.
         - Edge tracking using hysteresis.
         
-      ![Canny Edge Detection](https://i.imgur.com/WnD7Oaf.png)
+      ![Canny Edge Detection](![image](https://github.com/IbrahimEmad11/CompVision_Task2/assets/110200613/b958a85d-832f-46fa-8a8c-f9d4ff0c2753)
+)
       
     - **Hough Transform for Line Detection:**
         - Line detection using parametric representation in θ and ρ space.
@@ -83,3 +84,9 @@ This project involves edge and boundary detection using various computer vision 
       ```bash
       python task3.py
       ```
+### Team Members
+- **Ibrahim Emad** 
+- **Ahmed Khaled**
+- **Arsany Maged** 
+- **Omar Atef** 
+- **Kyrollos Emad** 
