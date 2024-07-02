@@ -17,7 +17,7 @@ This project involves edge and boundary detection using various computer vision 
         - Non-maximum suppression to thin the edges.
         - Edge tracking using hysteresis.
         
-      ![Canny Edge Detection](![image](assets/output/active-contour.jpg))
+      ![Canny Edge Detection]((assets/output/active-contour.jpg))
       
 
       
