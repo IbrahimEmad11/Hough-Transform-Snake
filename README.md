@@ -17,25 +17,25 @@ This project involves edge and boundary detection using various computer vision 
         - Non-maximum suppression to thin the edges.
         - Edge tracking using hysteresis.
         
-      ![Canny Edge Detection](assets/output/active-contour.jpg)
+      ![Canny Edge Detection](assets/output/canny.jpg)
       
 
       
     - **Hough Transform for Line Detection:**
         - Line detection using parametric representation in θ and ρ space.
         
-      ![Hough Line Detection]([https://i.imgur.com/XtNH9Hp.png](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/hough-line.jpg))
+      ![Hough Line Detection](assets/output/hough-line.jpg)
       
     - **Hough Transform for Circle Detection:**
         - Circle detection with a 3-dimensional parameter space for center coordinates and radius.
         
-      ![Hough Circle Detection]([https://i.imgur.com/6G6aeAs.png](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/hough-circle1.jpg))
-      ![Hough Circle Detection]([https://i.imgur.com/X7BpmQN.png](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/hough-circle2.jpg))
+      ![Hough Circle Detection](assets/output/hough-circle1.jpg)
+      ![Hough Circle Detection](assets/output/hough-circle2.jpg)
       
     - **Hough Transform for Ellipse Detection:**
         - Ellipse detection with a 5-dimensional parameter space for center coordinates, major and minor axes' lengths, and orientation angle.
         
-      ![Hough Ellipse Detection]([https://i.imgur.com/LKlhMx0.png](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/hough-elipse.png))
+      ![Hough Ellipse Detection](assets/output/hough-elipse.png)
 
 2. **Active Contour Model (SNAKE)**
     - **Initialize Contour:**
@@ -49,15 +49,8 @@ This project involves edge and boundary detection using various computer vision 
     - **Freeman Chain Code:**
         - Converted the contour points into chain codes using the Freeman chain code algorithm.
         
-      ![Active Contour](![image]([https://github.com/IbrahimEmad11/CompVision_Task2/assets/output/active-contour.jpg](https://github.com/IbrahimEmad11/CompVision_Task2/blob/main/assets/output/active-contour.jpg))
+      ![Active Contour](assets/output/active-contour.jpg)
 
-#### B) Reporting
-
-- Report includes:
-    - Detailed explanation of the methods used.
-    - Code implementation.
-    - Results with superimposed images.
-    - Calculations of perimeter and area for the contours.
 
 
 ### Instructions to Run the Code
