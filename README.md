@@ -1,9 +1,6 @@
 # Edge and Boundary Detection (Hough Transform and SNAKE)
 
-## Assignment 2
-
-
-### Overview
+## Overview
 This project involves edge and boundary detection using various computer vision techniques such as the Canny edge detector and Hough Transform for detecting lines, circles, and ellipses, as well as the Active Contour Model (SNAKE) for contour evolution.
 
 ### Tasks Implemented
@@ -11,12 +8,7 @@ This project involves edge and boundary detection using various computer vision 
 #### A) Tasks to Implement
 
 1. **Edge Detection and Shape Detection**
-    - **Canny Edge Detection:**
-        - Applied Gaussian filter to smooth the image and remove noise.
-        - Computed image gradient to identify edges.
-        - Non-maximum suppression to thin the edges.
-        - Edge tracking using hysteresis.
-        
+    - **Canny Edge Detection:** 
       ![Canny Edge Detection](assets/output/canny.jpg)
       
 
